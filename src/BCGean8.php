@@ -124,11 +124,11 @@ class BCGean8 extends BCGBarcode1D
 
             $this->labelLeft = new BCGLabel(substr($label, 0, 4), $font, BCGLabel::POSITION_BOTTOM, BCGLabel::ALIGN_LEFT);
             $labelLeftDimension = $this->labelLeft->getDimension();
-            $this->labelLeft->setOffset(($this->scale * 30 - $labelLeftDimension[0]) / 2 + $this->scale * 2);
+            $this->labelLeft->setOffset((int)(($this->scale * 30 - $labelLeftDimension[0]) / 2 + $this->scale * 2));
 
             $this->labelRight = new BCGLabel(substr($label, 4, 3) . $this->keys[$this->checksumValue[0]], $font, BCGLabel::POSITION_BOTTOM, BCGLabel::ALIGN_LEFT);
             $labelRightDimension = $this->labelRight->getDimension();
-            $this->labelRight->setOffset(($this->scale * 30 - $labelRightDimension[0]) / 2 + $this->scale * 34);
+            $this->labelRight->setOffset((int)(($this->scale * 30 - $labelRightDimension[0]) / 2 + $this->scale * 34));
 
             $this->addLabel($this->labelLeft);
             $this->addLabel($this->labelRight);

@@ -348,7 +348,7 @@ class BCGean13 extends BCGBarcode1D
      *
      * @param string $text The text.
      * @param int $inverse The inverse.
-     * @return string the reversed string.
+     * @return string The reversed string.
      */
     private static function inverse(string $text, int $inverse = 1): string
     {

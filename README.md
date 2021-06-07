@@ -39,32 +39,32 @@ use BarcodeBakery\Common\BCGDrawing;
 use BarcodeBakery\Barcode\BCGcode128;
 
 $font = new BCGFontFile(__DIR__ . '/font/Arial.ttf', 18);
-$colorFront = new BCGColor(0, 0, 0);
-$colorBack = new BCGColor(255, 255, 255);
+$colorBlack = new BCGColor(0, 0, 0);
+$colorWhite = new BCGColor(255, 255, 255);
 
 // Barcode Part
 $code = new BCGcode128();
 $code->setScale(2);
 $code->setThickness(30);
-$code->setForegroundColor($colorFront);
-$code->setBackgroundColor($colorBack);
+$code->setForegroundColor($colorBlack);
+$code->setBackgroundColor($colorWhite);
 $code->setFont($font);
 $code->setStart(null);
 $code->setTilde(true);
 $code->parse('a123');
 
 // Drawing Part
-$drawing = new BCGDrawing($code, $colorBack);
+$drawing = new BCGDrawing($code, $colorWhite);
 
 header('Content-Type: image/png');
 $drawing->finish(BCGDrawing::IMG_FORMAT_PNG);
 ```
 
 ### Saving the image to a file
-Replace the last line of the previous code with the following:
+Replace the last lines of the previous code with the following:
 ```php
 // Drawing Part
-$drawing = new BCGDrawing($code, $colorBack);
+$drawing = new BCGDrawing($code, $colorWhite);
 $drawing->finish(BCGDrawing::IMG_FORMAT_PNG, 'path/to/file.png');
 ```
 

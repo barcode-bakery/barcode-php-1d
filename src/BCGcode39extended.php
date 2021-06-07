@@ -47,7 +47,7 @@ class BCGcode39extended extends BCGcode39
      */
     public function parse($text): void
     {
-        $this->text = $text;
+        BCGBarcode1D::parse($text);
 
         $data = array();
         $indcheck = array();
@@ -90,7 +90,6 @@ class BCGcode39extended extends BCGcode39
         }
 
         $this->setData(array($indcheck, $data));
-        $this->addDefaultLabel();
     }
 
     /**
@@ -148,12 +147,7 @@ class BCGcode39extended extends BCGcode39
      */
     protected function validate(): void
     {
-        $c = count($this->data);
-        if ($c === 0) {
-            throw new BCGParseException('code39extended', 'No data has been entered.');
-        }
-
-        parent::validate();
+        // We do nothing.
     }
 
     /**

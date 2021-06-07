@@ -280,8 +280,10 @@ class BCGcode128 extends BCGBarcode1D
      */
     public function parse($text): void
     {
-        $this->setStartFromText($text);
+        parent::parse($text);
+        $this->setStartFromText($this->text);
 
+        $text = $this->text;
         $this->text = '';
         $seq = '';
 
@@ -362,21 +364,6 @@ class BCGcode128 extends BCGBarcode1D
         $width += $textlength + $endlength;
         $height += $this->thickness;
         return parent::getDimension($width, $height);
-    }
-
-    /**
-     * Validates the input.
-     *
-     * @return void
-     */
-    protected function validate(): void
-    {
-        $c = count($this->data);
-        if ($c === 0) {
-            throw new BCGParseException('code128', 'No data has been entered.');
-        }
-
-        parent::validate();
     }
 
     /**
@@ -647,7 +634,7 @@ class BCGcode128 extends BCGBarcode1D
      * @param string $startingText The starting text.
      * @return string The sequence.
      */
-    private function getSequence(string $text, string &$startingText): string
+    private function getSequence(string $text, string $startingText): string
     {
         $e = 10000;
         $latLen = array(

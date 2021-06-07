@@ -1,6 +1,6 @@
 {
     "name": "barcode-bakery/barcode-1d",
-    "version": "7.0.0",
+    "version": "7.0.2",
     "license": [
         "proprietary",
         "CC-BY-NC-ND-4.0"
@@ -27,6 +27,7 @@
         "barcode",
         "generator",
         "bakery",
+        "barcodebakery",
         "codabar",
         "code11",
         "code39",
@@ -49,6 +50,6 @@
     "require": {
         "php": ">=7.4",
         "ext-gd": "*",
-        "barcode-bakery/barcode-common": ">=7.0.0"
+        "barcode-bakery/barcode-common": ">=7.0.2"
     }
 }

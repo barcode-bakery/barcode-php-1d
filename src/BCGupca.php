@@ -131,9 +131,9 @@ class BCGupca extends BCGean13
                 $this->labelRight->setOffset($labelDimension[1]);
             } else {
                 $labelDimension = $this->labelLeft->getDimension();
-                $this->labelLeft->setOffset($labelDimension[1] / 2);
+                $this->labelLeft->setOffset((int)($labelDimension[1] / 2));
                 $labelDimension = $this->labelLeft->getDimension();
-                $this->labelRight->setOffset($labelDimension[1] / 2);
+                $this->labelRight->setOffset((int)($labelDimension[1] / 2));
             }
 
             $this->addLabel($this->labelLeft);

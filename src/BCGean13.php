@@ -139,17 +139,17 @@ class BCGean13 extends BCGBarcode1D
 
             $this->labelCenter1 = new BCGLabel(substr($label, 1, 6), $font, BCGLabel::POSITION_BOTTOM, BCGLabel::ALIGN_LEFT);
             $labelCenter1Dimension = $this->labelCenter1->getDimension();
-            $this->labelCenter1->setOffset(($this->scale * 44 - $labelCenter1Dimension[0]) / 2 + $this->scale * 2);
+            $this->labelCenter1->setOffset((int)(($this->scale * 44 - $labelCenter1Dimension[0]) / 2 + $this->scale * 2));
 
             $this->labelCenter2 = new BCGLabel(substr($label, 7, 5) . $this->keys[$this->checksumValue[0]], $font, BCGLabel::POSITION_BOTTOM, BCGLabel::ALIGN_LEFT);
-            $this->labelCenter2->setOffset(($this->scale * 44 - $labelCenter1Dimension[0]) / 2 + $this->scale * 48);
+            $this->labelCenter2->setOffset((int)(($this->scale * 44 - $labelCenter1Dimension[0]) / 2 + $this->scale * 48));
 
             if ($this->alignLabel) {
                 $labelDimension = $this->labelCenter1->getDimension();
                 $this->labelLeft->setOffset($labelDimension[1]);
             } else {
                 $labelDimension = $this->labelLeft->getDimension();
-                $this->labelLeft->setOffset($labelDimension[1] / 2);
+                $this->labelLeft->setOffset((int)($labelDimension[1] / 2));
             }
 
             $this->addLabel($this->labelLeft);

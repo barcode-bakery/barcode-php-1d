@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -21,10 +23,10 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGcode93 extends BCGBarcode1D
 {
-    const EXTENDED_1 = 43;
-    const EXTENDED_2 = 44;
-    const EXTENDED_3 = 45;
-    const EXTENDED_4 = 46;
+    private const EXTENDED_1 = 43;
+    private const EXTENDED_2 = 44;
+    private const EXTENDED_3 = 45;
+    private const EXTENDED_4 = 46;
 
     private int $starting;
     private int $ending;
@@ -39,8 +41,8 @@ class BCGcode93 extends BCGBarcode1D
         parent::__construct();
 
         $this->starting = $this->ending = 47; /* * */
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', '($)', '(%)', '(/)', '(+)', '(*)');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', '($)', '(%)', '(/)', '(+)', '(*)'];
+        $this->code = [
             '020001',   /* 0 */
             '000102',   /* 1 */
             '000201',   /* 2 */
@@ -89,7 +91,7 @@ class BCGcode93 extends BCGBarcode1D
             '200010',   /*(/)*/
             '011100',   /*(+)*/
             '000030'    /*(*)*/
-        );
+        ];
     }
 
     /**
@@ -98,16 +100,17 @@ class BCGcode93 extends BCGBarcode1D
      * @param string $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         BCGBarcode1D::parse($text);
 
-        $data = array();
-        $indcheck = array();
+        $data = [];
+        $indcheck = [];
 
         $c = strlen($this->text);
         for ($i = 0; $i < $c; $i++) {
-            $pos = array_search($this->text[$i], $this->keys);
+            $pos = array_search($this->text[$i], $this->keys, true);
             if ($pos === false) {
                 // Search in extended?
                 $extended = self::getExtendedVersion($this->text[$i]);
@@ -130,7 +133,7 @@ class BCGcode93 extends BCGBarcode1D
                             $indcheck[] = self::EXTENDED_4;
                             $data[] = $this->code[self::EXTENDED_4];
                         } else {
-                            $pos2 = array_search($v, $this->keys);
+                            $pos2 = array_search($v, $this->keys, true);
                             $indcheck[] = $pos2;
                             $data[] = $this->code[$pos2];
                         }
@@ -142,16 +145,17 @@ class BCGcode93 extends BCGBarcode1D
             }
         }
 
-        $this->setData(array($indcheck, $data));
+        $this->setData([$indcheck, $data]);
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Starting *
         $this->drawChar($image, $this->code[$this->starting], true);
@@ -179,8 +183,9 @@ class BCGcode93 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 9;
@@ -198,6 +203,7 @@ class BCGcode93 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         // We do nothing.
@@ -208,6 +214,7 @@ class BCGcode93 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Checksum
@@ -220,8 +227,8 @@ class BCGcode93 extends BCGBarcode1D
         // Second CheckSUM "K"
         // Same as CheckSUM "C" but we count the CheckSum "C" at the end
         // After 15, the sequence wraps around back to 1.
-        $sequenceMultiplier = array(20, 15);
-        $this->checksumValue = array();
+        $sequenceMultiplier = [20, 15];
+        $this->checksumValue = [];
         $indcheck = $this->indcheck;
         for ($z = 0; $z < 2; $z++) {
             $checksum = 0;
@@ -244,6 +251,7 @@ class BCGcode93 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once

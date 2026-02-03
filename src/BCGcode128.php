@@ -1,13 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 /**
  *--------------------------------------------------------------------
  *
  * Sub-Class - Code 128, A, B, C
- *
- * # Code C Working properly only on PHP4 or PHP5.0.3+ due to bug :
- * http://bugs.php.net/bug.php?id=28862
  *
  * !! Warning !!
  * If you display the checksum on the label, you may obtain
@@ -17,6 +15,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -28,36 +27,35 @@ define('CODE128_B', 2);            // Table B
 define('CODE128_C', 3);            // Table C
 class BCGcode128 extends BCGBarcode1D
 {
-    const CODE128_A = 1;
-    const CODE128_B = 2;
-    const CODE128_C = 3;
+    public const CODE128_A = 1;
+    public const CODE128_B = 2;
+    public const CODE128_C = 3;
 
-    // TODO assign private to these const. PHP 7.1
-    const KEYA_FNC3 = 96;
-    const KEYA_FNC2 = 97;
-    const KEYA_SHIFT = 98;
-    const KEYA_CODEC = 99;
-    const KEYA_CODEB = 100;
-    const KEYA_FNC4 = 101;
-    const KEYA_FNC1 = 102;
+    private const KEYA_FNC3 = 96;
+    private const KEYA_FNC2 = 97;
+    private const KEYA_SHIFT = 98;
+    private const KEYA_CODEC = 99;
+    private const KEYA_CODEB = 100;
+    private const KEYA_FNC4 = 101;
+    private const KEYA_FNC1 = 102;
 
-    const KEYB_FNC3 = 96;
-    const KEYB_FNC2 = 97;
-    const KEYB_SHIFT = 98;
-    const KEYB_CODEC = 99;
-    const KEYB_FNC4 = 100;
-    const KEYB_CODEA = 101;
-    const KEYB_FNC1 = 102;
+    private const KEYB_FNC3 = 96;
+    private const KEYB_FNC2 = 97;
+    private const KEYB_SHIFT = 98;
+    private const KEYB_CODEC = 99;
+    private const KEYB_FNC4 = 100;
+    private const KEYB_CODEA = 101;
+    private const KEYB_FNC1 = 102;
 
-    const KEYC_CODEB = 100;
-    const KEYC_CODEA = 101;
-    const KEYC_FNC1 = 102;
+    private const KEYC_CODEB = 100;
+    private const KEYC_CODEA = 101;
+    private const KEYC_FNC1 = 102;
 
-    const KEY_STARTA = 103;
-    const KEY_STARTB = 104;
-    const KEY_STARTC = 105;
+    private const KEY_STARTA = 103;
+    private const KEY_STARTB = 104;
+    private const KEY_STARTC = 105;
 
-    const KEY_STOP = 106;
+    private const KEY_STOP = 106;
 
     protected string $keysA;
     protected string $keysB;
@@ -95,7 +93,7 @@ class BCGcode128 extends BCGBarcode1D
         /* CODE 128 C */
         $this->keysC = '0123456789';
 
-        $this->code = array(
+        $this->code = [
             '101111',   /* 00 */
             '111011',   /* 01 */
             '111110',   /* 02 */
@@ -203,28 +201,28 @@ class BCGcode128 extends BCGBarcode1D
             '100103',   /* 104*/
             '100121',   /* 105*/
             '122000'    /*STOP*/
-        );
+        ];
         $this->setStart($start);
         $this->setTilde(true);
 
         // Latches and Shifts
-        $this->latch = array(
-            array(null,             self::KEYA_CODEB,   self::KEYA_CODEC),
-            array(self::KEYB_CODEA, null,               self::KEYB_CODEC),
-            array(self::KEYC_CODEA, self::KEYC_CODEB,   null)
-        );
-        $this->shift = array(
-            array(null,             self::KEYA_SHIFT),
-            array(self::KEYB_SHIFT, null)
-        );
-        $this->fnc = array(
-            array(self::KEYA_FNC1,  self::KEYA_FNC2,    self::KEYA_FNC3,    self::KEYA_FNC4),
-            array(self::KEYB_FNC1,  self::KEYB_FNC2,    self::KEYB_FNC3,    self::KEYB_FNC4),
-            array(self::KEYC_FNC1,  null,               null,               null)
-        );
+        $this->latch = [
+            [null,             self::KEYA_CODEB,   self::KEYA_CODEC],
+            [self::KEYB_CODEA, null,               self::KEYB_CODEC],
+            [self::KEYC_CODEA, self::KEYC_CODEB,   null]
+        ];
+        $this->shift = [
+            [null,             self::KEYA_SHIFT],
+            [self::KEYB_SHIFT, null]
+        ];
+        $this->fnc = [
+            [self::KEYA_FNC1,  self::KEYA_FNC2,    self::KEYA_FNC3,    self::KEYA_FNC4],
+            [self::KEYB_FNC1,  self::KEYB_FNC2,    self::KEYB_FNC3,    self::KEYB_FNC4],
+            [self::KEYC_FNC1,  null,               null,               null]
+        ];
 
         // Method available
-        $this->METHOD        = array(CODE128_A => 'A', CODE128_B => 'B', CODE128_C => 'C');
+        $this->METHOD        = [CODE128_A => 'A', CODE128_B => 'B', CODE128_C => 'C'];
     }
 
     /**
@@ -269,7 +267,7 @@ class BCGcode128 extends BCGBarcode1D
      */
     public function setTilde(bool $accept): void
     {
-        $this->tilde = (bool)$accept;
+        $this->tilde = $accept;
     }
 
     /**
@@ -278,7 +276,8 @@ class BCGcode128 extends BCGBarcode1D
      * @param mixed $text The input.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         parent::parse($text);
         $this->setStartFromText($this->text);
@@ -334,10 +333,11 @@ class BCGcode128 extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         $c = count($this->data);
         for ($i = 0; $i < $c; $i++) {
@@ -353,8 +353,9 @@ class BCGcode128 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         // Contains start + text + checksum + stop
@@ -371,6 +372,7 @@ class BCGcode128 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Checksum
@@ -379,7 +381,7 @@ class BCGcode128 extends BCGBarcode1D
         // take the value of the character (between 0 and 102, inclusive) multiply
         // it by its character position (1) and add that to the running checksum.
         // Modulated 103
-        $this->checksumValue = array($this->indcheck[0]);
+        $this->checksumValue = [$this->indcheck[0]];
         $c = count($this->indcheck);
         for ($i = 1; $i < $c; $i++) {
             $this->checksumValue[0] += $this->indcheck[$i] * $i;
@@ -393,6 +395,7 @@ class BCGcode128 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once
@@ -416,7 +419,7 @@ class BCGcode128 extends BCGBarcode1D
      * @param mixed $text The text.
      * @return void
      */
-    private function setStartFromText($text): void
+    private function setStartFromText(mixed $text): void
     {
         if ($this->startingText === null) {
             // If we have a forced table at the start, we get that one...
@@ -563,7 +566,7 @@ class BCGcode128 extends BCGBarcode1D
             $tmp .= '~';
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('/[^' . $tmp . ']/', $text, $matches) === 1) {
             // We found something not allowed
             throw new BCGParseException('code128', 'The text "' . $text . '" can\'t be parsed with the Table A. The character "' . $matches[0] . '" is not allowed.');
@@ -586,7 +589,7 @@ class BCGcode128 extends BCGBarcode1D
     {
         $tmp = preg_quote($this->keysB, '/');
 
-        $matches = array();
+        $matches = [];
         if (preg_match('/[^' . $tmp . ']/', $text, $matches) === 1) {
             // We found something not allowed
             throw new BCGParseException('code128', 'The text "' . $text . '" can\'t be parsed with the Table B. The character "' . $matches[0] . '" is not allowed.');
@@ -614,7 +617,7 @@ class BCGcode128 extends BCGBarcode1D
             $tmp .= '~F';
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('/[^' . $tmp . ']/', $text, $matches) === 1) {
             // We found something not allowed
             throw new BCGParseException('code128', 'The text "' . $text . '" can\'t be parsed with the Table C. The character "' . $matches[0] . '" is not allowed.');
@@ -637,17 +640,17 @@ class BCGcode128 extends BCGBarcode1D
     private function getSequence(string $text, string $startingText): string
     {
         $e = 10000;
-        $latLen = array(
-            array(0, 1, 1),
-            array(1, 0, 1),
-            array(1, 1, 0)
-        );
-        $shftLen = array(
-            array($e, 1, $e),
-            array(1, $e, $e),
-            array($e, $e, $e)
-        );
-        $charSiz = array(2, 2, 1);
+        $latLen = [
+            [0, 1, 1],
+            [1, 0, 1],
+            [1, 1, 0]
+        ];
+        $shftLen = [
+            [$e, 1, $e],
+            [1, $e, $e],
+            [$e, $e, $e]
+        ];
+        $charSiz = [2, 2, 1];
 
         $startA = $e;
         $startB = $e;
@@ -662,8 +665,8 @@ class BCGcode128 extends BCGBarcode1D
             $startC = 0;
         }
 
-        $curLen = array($startA, $startB, $startC);
-        $curSeq = array(null, null, null);
+        $curLen = [$startA, $startB, $startC];
+        $curSeq = ['', '', ''];
 
         $nextNumber = false;
 
@@ -677,18 +680,18 @@ class BCGcode128 extends BCGBarcode1D
                 for ($j = 0; $j < 3; $j++) {
                     if (($curLen[$i] + $latLen[$i][$j]) < $curLen[$j]) {
                         $curLen[$j] = $curLen[$i] + $latLen[$i][$j];
-                        $curSeq[$j] = $curSeq[$i] . $j;
+                        $curSeq[$j] = $curSeq[$i] . (string)$j;
                     }
                 }
             }
 
             // 2.
-            $nxtLen = array($e, $e, $e);
-            $nxtSeq = array();
+            $nxtLen = [$e, $e, $e];
+            $nxtSeq = [];
 
             // 3.
             $flag = false;
-            $posArray = array();
+            $posArray = [];
 
             // Special case, we do have a tilde and we process them
             if ($this->tilde && $input === '~') {
@@ -804,8 +807,8 @@ class BCGcode128 extends BCGBarcode1D
     {
         $c = strlen($seq);
 
-        $data = array(); // code stream
-        $indcheck = array(); // index for checksum
+        $data = []; // code stream
+        $indcheck = []; // index for checksum
 
         $currentEncoding = 0;
         if ($this->startingText === 'A') {
@@ -859,7 +862,7 @@ class BCGcode128 extends BCGBarcode1D
             }
         }
 
-        return array($indcheck, $data);
+        return [$indcheck, $data];
     }
 
     /**

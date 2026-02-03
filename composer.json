@@ -1,55 +1,55 @@
 {
-    "name": "barcode-bakery/barcode-1d",
-    "version": "7.0.4",
-    "license": [
-        "proprietary",
-        "CC-BY-NC-ND-4.0"
-    ],
-    "support": {
-        "email": "contact@barcodebakery.com",
-        "docs": "https://www.barcodebakery.com"
-    },
-    "type": "library",
-    "homepage": "https://www.barcodebakery.com",
-    "authors": [
-        {
-            "name": "Jean-Sébastien Goupil",
-            "email": "contact@barcodebakery.com"
-        }
-    ],
-    "description": "Generates 1D barcodes from a PHP server to a file or HTML document.",
-    "autoload": {
-        "psr-4": {
-            "BarcodeBakery\\Barcode\\": "src"
-        }
-    },
-    "keywords": [
-        "barcode",
-        "generator",
-        "bakery",
-        "barcodebakery",
-        "codabar",
-        "code11",
-        "code39",
-        "code39extended",
-        "code93",
-        "code128",
-        "ean-8",
-        "ean-13",
-        "ean8",
-        "ean13",
-        "isbn",
-        "i25",
-        "s25",
-        "msi",
-        "upc-a",
-        "upc-e",
-        "upcext2",
-        "upcext5"
-    ],
-    "require": {
-        "php": ">=7.4",
-        "ext-gd": "*",
-        "barcode-bakery/barcode-common": ">=7.0.3"
+  "name": "barcode-bakery/barcode-1d",
+  "version": "8.0.0",
+  "license": [
+    "proprietary",
+    "CC-BY-NC-ND-4.0"
+  ],
+  "support": {
+    "email": "contact@barcodebakery.com",
+    "docs": "https://www.barcodebakery.com"
+  },
+  "type": "library",
+  "homepage": "https://www.barcodebakery.com",
+  "authors": [
+    {
+      "name": "Jean-Sébastien Goupil",
+      "email": "contact@barcodebakery.com"
     }
+  ],
+  "description": "Generates 1D barcodes from a PHP server to a file or HTML document.",
+  "autoload": {
+    "psr-4": {
+      "BarcodeBakery\\Barcode\\": "src"
+    }
+  },
+  "keywords": [
+    "barcode",
+    "generator",
+    "bakery",
+    "barcodebakery",
+    "codabar",
+    "code11",
+    "code39",
+    "code39extended",
+    "code93",
+    "code128",
+    "ean-8",
+    "ean-13",
+    "ean8",
+    "ean13",
+    "isbn",
+    "i25",
+    "s25",
+    "msi",
+    "upc-a",
+    "upc-e",
+    "upcext2",
+    "upcext5"
+  ],
+  "require": {
+    "php": ">=8.4",
+    "ext-gd": "*",
+    "barcode-bakery/barcode-common": ">=8"
+  }
 }

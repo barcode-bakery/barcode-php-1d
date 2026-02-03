@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode;
@@ -30,7 +32,8 @@ class BCGintelligentmail extends BCGBarcode1D
 
     private string $data;
 
-    private static array $characterTable1 = array(
+    // @formatter:off
+    private static array $characterTable1 = [
         31,     7936,   47,     7808,   55,     7552,   59,     7040,   61,     6016,
         62,     3968,   79,     7744,   87,     7488,   91,     6976,   93,     5952,
         94,     3904,   103,    7360,   107,    6848,   109,    5824,   110,    3776,
@@ -159,9 +162,9 @@ class BCGintelligentmail extends BCGBarcode1D
         5141,   5381,   5155,   6277,   5157,   5253,   5187,   6213,   5251,   6181,
         5379,   6165,   5635,   6157,   6151,   7171,   6155,   6659,   6163,   6403,
         6179,   6275,   6211,   5189,   4681,   4433,   4321,   3142,   2634,   2386,
-        2274,   1612,   1364,   1252,   856,    744,    496);
+        2274,   1612,   1364,   1252,   856,    744,    496];
 
-    private static array $characterTable2 = array(
+    private static array $characterTable2 = [
         3,      6144,   5,      5120,   6,      3072,   9,      4608,   10,     2560,
         12,     1536,   17,     4352,   18,     2304,   20,     1280,   24,     768,
         33,     4224,   34,     2176,   36,     1152,   40,     640,    48,     384,
@@ -169,75 +172,76 @@ class BCGintelligentmail extends BCGBarcode1D
         96,     192,    129,    4128,   130,    2080,   132,    1056,   136,    544,
         144,    288,    257,    4112,   258,    2064,   260,    1040,   264,    528,
         513,    4104,   514,    2056,   516,    1032,   1025,   4100,   1026,   2052,
-        2049,   4098,   4097,   2050,   1028,   520,    272,    160);
+        2049,   4098,   4097,   2050,   1028,   520,    272,    160];
 
-    private static array $barPositions = array(
-        array(array(7, 2),  array(4, 3)),
-        array(array(1, 10), array(0, 0)),
-        array(array(9, 12), array(2, 8)),
-        array(array(5, 5),  array(6, 11)),
-        array(array(8, 9),  array(3, 1)),
-        array(array(0, 1),  array(5, 12)),
-        array(array(2, 5),  array(1, 8)),
-        array(array(4, 4),  array(9, 11)),
-        array(array(6, 3),  array(8, 10)),
-        array(array(3, 9),  array(7, 6)),
-        array(array(5, 11), array(1, 4)),
-        array(array(8, 5),  array(2, 12)),
-        array(array(9, 10), array(0, 2)),
-        array(array(7, 1),  array(6, 7)),
-        array(array(3, 6),  array(4, 9)),
-        array(array(0, 3),  array(8, 6)),
-        array(array(6, 4),  array(2, 7)),
-        array(array(1, 1),  array(9, 9)),
-        array(array(7, 10), array(5, 2)),
-        array(array(4, 0),  array(3, 8)),
-        array(array(6, 2),  array(0, 4)),
-        array(array(8, 11), array(1, 0)),
-        array(array(9, 8),  array(3, 12)),
-        array(array(2, 6),  array(7, 7)),
-        array(array(5, 1),  array(4, 10)),
-        array(array(1, 12), array(6, 9)),
-        array(array(7, 3),  array(8, 0)),
-        array(array(5, 8),  array(9, 7)),
-        array(array(4, 6),  array(2, 10)),
-        array(array(3, 4),  array(0, 5)),
-        array(array(8, 4),  array(5, 7)),
-        array(array(7, 11), array(1, 9)),
-        array(array(6, 0),  array(9, 6)),
-        array(array(0, 6),  array(4, 8)),
-        array(array(2, 1),  array(3, 2)),
-        array(array(5, 9),  array(8, 12)),
-        array(array(4, 11), array(6, 1)),
-        array(array(9, 5),  array(7, 4)),
-        array(array(3, 3),  array(1, 2)),
-        array(array(0, 7),  array(2, 0)),
-        array(array(1, 3),  array(4, 1)),
-        array(array(6, 10), array(3, 5)),
-        array(array(8, 7),  array(9, 4)),
-        array(array(2, 11), array(5, 6)),
-        array(array(0, 8),  array(7, 12)),
-        array(array(4, 2),  array(8, 1)),
-        array(array(5, 10), array(3, 0)),
-        array(array(9, 3),  array(0, 9)),
-        array(array(6, 5),  array(2, 4)),
-        array(array(7, 8),  array(1, 7)),
-        array(array(5, 0),  array(4, 5)),
-        array(array(2, 3),  array(0, 10)),
-        array(array(6, 12), array(9, 2)),
-        array(array(3, 11), array(1, 6)),
-        array(array(8, 8),  array(7, 9)),
-        array(array(5, 4),  array(0, 11)),
-        array(array(1, 5),  array(2, 2)),
-        array(array(9, 1),  array(4, 12)),
-        array(array(8, 3),  array(6, 6)),
-        array(array(7, 0),  array(3, 7)),
-        array(array(4, 7),  array(7, 5)),
-        array(array(0, 12), array(1, 11)),
-        array(array(2, 9),  array(9, 0)),
-        array(array(6, 8),  array(5, 3)),
-        array(array(3, 10), array(8, 2))
-    );
+    private static array $barPositions = [
+        [[7, 2],  [4, 3]],
+        [[1, 10], [0, 0]],
+        [[9, 12], [2, 8]],
+        [[5, 5],  [6, 11]],
+        [[8, 9],  [3, 1]],
+        [[0, 1],  [5, 12]],
+        [[2, 5],  [1, 8]],
+        [[4, 4],  [9, 11]],
+        [[6, 3],  [8, 10]],
+        [[3, 9],  [7, 6]],
+        [[5, 11], [1, 4]],
+        [[8, 5],  [2, 12]],
+        [[9, 10], [0, 2]],
+        [[7, 1],  [6, 7]],
+        [[3, 6],  [4, 9]],
+        [[0, 3],  [8, 6]],
+        [[6, 4],  [2, 7]],
+        [[1, 1],  [9, 9]],
+        [[7, 10], [5, 2]],
+        [[4, 0],  [3, 8]],
+        [[6, 2],  [0, 4]],
+        [[8, 11], [1, 0]],
+        [[9, 8],  [3, 12]],
+        [[2, 6],  [7, 7]],
+        [[5, 1],  [4, 10]],
+        [[1, 12], [6, 9]],
+        [[7, 3],  [8, 0]],
+        [[5, 8],  [9, 7]],
+        [[4, 6],  [2, 10]],
+        [[3, 4],  [0, 5]],
+        [[8, 4],  [5, 7]],
+        [[7, 11], [1, 9]],
+        [[6, 0],  [9, 6]],
+        [[0, 6],  [4, 8]],
+        [[2, 1],  [3, 2]],
+        [[5, 9],  [8, 12]],
+        [[4, 11], [6, 1]],
+        [[9, 5],  [7, 4]],
+        [[3, 3],  [1, 2]],
+        [[0, 7],  [2, 0]],
+        [[1, 3],  [4, 1]],
+        [[6, 10], [3, 5]],
+        [[8, 7],  [9, 4]],
+        [[2, 11], [5, 6]],
+        [[0, 8],  [7, 12]],
+        [[4, 2],  [8, 1]],
+        [[5, 10], [3, 0]],
+        [[9, 3],  [0, 9]],
+        [[6, 5],  [2, 4]],
+        [[7, 8],  [1, 7]],
+        [[5, 0],  [4, 5]],
+        [[2, 3],  [0, 10]],
+        [[6, 12], [9, 2]],
+        [[3, 11], [1, 6]],
+        [[8, 8],  [7, 9]],
+        [[5, 4],  [0, 11]],
+        [[1, 5],  [2, 2]],
+        [[9, 1],  [4, 12]],
+        [[8, 3],  [6, 6]],
+        [[7, 0],  [3, 7]],
+        [[4, 7],  [7, 5]],
+        [[0, 12], [1, 11]],
+        [[2, 9],  [9, 0]],
+        [[6, 8],  [5, 3]],
+        [[3, 10], [8, 2]]
+    ];
+    // @formatter:on
 
     /**
      * Constructor.
@@ -268,7 +272,7 @@ class BCGintelligentmail extends BCGBarcode1D
      */
     public function setQuietZone(bool $quietZone): void
     {
-        $this->quietZone = (bool)$quietZone;
+        $this->quietZone = $quietZone;
     }
 
     /**
@@ -280,7 +284,7 @@ class BCGintelligentmail extends BCGBarcode1D
      * @param int|string $serialNumber 9 (if mailerId is 6) or 6 digits (if mailerId is 9).
      * @return void
      */
-    public function setTrackingCode($barcodeIdentifier, $serviceTypeIdentifier, $mailerIdentifier, $serialNumber): void
+    public function setTrackingCode(int|string $barcodeIdentifier, int|string $serviceTypeIdentifier, int|string $mailerIdentifier, int|string $serialNumber): void
     {
         $barcodeIdentifier = (string)(int)$barcodeIdentifier;
         $serviceTypeIdentifier = (string)(int)$serviceTypeIdentifier;
@@ -329,7 +333,8 @@ class BCGintelligentmail extends BCGBarcode1D
      * @param string $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         parent::parse($text);
 
@@ -344,10 +349,11 @@ class BCGintelligentmail extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         if ($this->quietZone) {
             $this->positionX += 9;
@@ -366,8 +372,9 @@ class BCGintelligentmail extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $width += 65 * 3;
@@ -389,6 +396,7 @@ class BCGintelligentmail extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         // Tracking must have been entered
@@ -397,7 +405,7 @@ class BCGintelligentmail extends BCGBarcode1D
         }
 
         // Checking if all chars are allowed
-        $matches = array();
+        $matches = [];
         if (preg_match('/[^0-9]/', $this->text, $matches)) {
             throw new BCGParseException('intelligentmail', 'The character \'' . $matches[0] . '\' is not allowed.');
         }
@@ -414,12 +422,13 @@ class BCGintelligentmail extends BCGBarcode1D
     /**
      * Overloaded method for drawing special barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @param string $code The code.
      * @param bool $startBar True if we begin with a space.
      * @return void
      */
-    protected function drawChar($image, string $code, bool $startBar = true): void
+    #[\Override]
+    protected function drawChar(\GdImage $image, string $code, bool $startBar = true): void
     {
         $y1 = 0;
         $y2 = 0;
@@ -524,7 +533,7 @@ class BCGintelligentmail extends BCGBarcode1D
      */
     private static function executeStep3(string $number): array
     {
-        $codewords = array();
+        $codewords = [];
         $codewords[9] = (int)bcmod($number, '636');
         $number = bcdiv($number, '636', 0);
 
@@ -562,7 +571,7 @@ class BCGintelligentmail extends BCGBarcode1D
      */
     private static function executeStep5(array $codewords, int $crc): array
     {
-        $characters = array();
+        $characters = [];
         for ($i = 0; $i < 10; $i++) {
             if ($codewords[$i] <= 1286) {
                 $characters[$i] = self::$characterTable1[$codewords[$i]];

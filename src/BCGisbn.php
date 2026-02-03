@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,18 +17,18 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGArgumentException;
-use BarcodeBakery\Common\BCGBarcode1D;
 use BarcodeBakery\Common\BCGLabel;
 use BarcodeBakery\Common\BCGParseException;
 
 class BCGisbn extends BCGean13
 {
-    const GS1_AUTO = 0;
-    const GS1_PREFIX978 = 1;
-    const GS1_PREFIX979 = 2;
+    public const GS1_AUTO = 0;
+    public const GS1_PREFIX978 = 1;
+    public const GS1_PREFIX979 = 2;
 
     private int $gs1;
 
@@ -47,6 +48,7 @@ class BCGisbn extends BCGean13
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         if ($this->isDefaultEanLabelEnabled()) {
@@ -72,7 +74,6 @@ class BCGisbn extends BCGean13
      */
     public function setGS1(int $gs1): void
     {
-        $gs1 = (int)$gs1;
         if ($gs1 !== self::GS1_AUTO && $gs1 !== self::GS1_PREFIX978 && $gs1 !== self::GS1_PREFIX979) {
             throw new BCGArgumentException('The GS1 argument must be BCGisbn::GS1_AUTO, BCGisbn::GS1_PREFIX978, or BCGisbn::GS1_PREFIX979', 'gs1');
         }
@@ -91,7 +92,7 @@ class BCGisbn extends BCGean13
 
         // Special case, if we have 10 digits, the last one can be X
         if ($c === 10) {
-            if (array_search($this->text[9], $this->keys) === false && $this->text[9] !== 'X') {
+            if (!in_array($this->text[9], $this->keys, true) && $this->text[9] !== 'X') {
                 throw new BCGParseException('isbn', 'The character \'' . $this->text[9] . '\' is not allowed.');
             }
 
@@ -107,6 +108,7 @@ class BCGisbn extends BCGean13
      *
      * @return void
      */
+    #[\Override]
     protected function checkCorrectLength(): void
     {
         $c = strlen($this->text);
@@ -117,7 +119,7 @@ class BCGisbn extends BCGean13
         } elseif ($c === 9 || $c === 10) {
             if ($c === 10) {
                 // Before dropping it, we check if it's legal
-                if (array_search($this->text[9], $this->keys) === false && $this->text[9] !== 'X') {
+                if (!in_array($this->text[9], $this->keys, true) && $this->text[9] !== 'X') {
                     throw new BCGParseException('isbn', 'The character \'' . $this->text[9] . '\' is not allowed.');
                 }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,25 +11,25 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
-use BarcodeBakery\Common\BCGBarcode1D;
 use BarcodeBakery\Common\BCGParseException;
 use BarcodeBakery\Common\GS1\KindOfData;
 
 class BCGgs1128 extends BCGcode128
 {
-    const ID = 0;
-    const CONTENT = 1;
-    const MAX_ID_FORMATTED = 6;
-    const MAX_ID_NOT_FORMATTED = 4;
-    const MAX_GS1128_CHARS = 48;
+    private const ID = 0;
+    private const CONTENT = 1;
+    private const MAX_ID_FORMATTED = 6;
+    private const MAX_ID_NOT_FORMATTED = 4;
+    private const MAX_GS1128_CHARS = 48;
 
     private bool $strictMode;
     private bool $allowsUnknownIdentifier;
     private bool $noLengthLimit;
-    private array $identifiersId = array();
-    private array $identifiersContent = array();
+    private array $identifiersId = [];
+    private array $identifiersContent = [];
     private ?array $identifiersAi = null;
 
     /**
@@ -91,7 +92,7 @@ class BCGgs1128 extends BCGcode128
      */
     public function setAllowsUnknownIdentifier(bool $allow): void
     {
-        $this->allowsUnknownIdentifier = (bool)$allow;
+        $this->allowsUnknownIdentifier = $allow;
     }
 
     /**
@@ -112,7 +113,7 @@ class BCGgs1128 extends BCGcode128
      */
     public function setNoLengthLimit(bool $noLengthLimit): void
     {
-        $this->noLengthLimit = (bool)$noLengthLimit;
+        $this->noLengthLimit = $noLengthLimit;
     }
 
     /**
@@ -135,7 +136,7 @@ class BCGgs1128 extends BCGcode128
     {
         // Using array_column will convert the keys to integer.
         $this->identifiersAi = array_column(array_map(function ($entry) {
-            return array(0 => $entry->getAI(), 1 => $entry);
+            return [0 => $entry->getAI(), 1 => $entry];
         }, $aiDatas), 1, 0);
     }
 
@@ -155,10 +156,11 @@ class BCGgs1128 extends BCGcode128
      * @param mixed $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
-        $this->identifiersId = array();
-        $this->identifiersContent = array();
+        $this->identifiersId = [];
+        $this->identifiersContent = [];
         parent::parse($this->parseGs1128($text));
     }
 
@@ -231,11 +233,11 @@ class BCGgs1128 extends BCGcode128
      * @param mixed $text The inputs.
      * @return string Final formatted data.
      */
-    private function parseGs1128($text): ?string
+    private function parseGs1128(mixed $text): ?string
     {
         /* We format correctly what the user gives */
         if (is_array($text)) {
-            $formatArray = array();
+            $formatArray = [];
             foreach ($text as $content) {
                 if (is_array($content)) { /* double array */
                     if (count($content) === 2) {
@@ -255,7 +257,7 @@ class BCGgs1128 extends BCGcode128
             unset($text);
             $text = $formatArray;
         } else { /* string */
-            $text = array($text);
+            $text = [$text];
         }
 
         $textCount = count($text);
@@ -482,18 +484,19 @@ class BCGgs1128 extends BCGcode128
                     $year = substr($content, 0, 2);
                     $month = substr($content, 2, 2);
                     $day = substr($content, 4, 2);
-                    $hour = substr(content, 6, 2);
-                    $minute = strlen(content) >= 10 ? substr(content, 8, 2) : null;
-                    $second = strlen(content) >= 12 ? substr(content, 10, 2) : null;
+                    $hour = substr($content, 6, 2);
+                    $minute = strlen($content) >= 10 ? substr($content, 8, 2) : null;
+                    $second = strlen($content) >= 12 ? substr($content, 10, 2) : null;
 
                     /* day can be 00 if we only need month and year */
-                    if (intval($month) < 1
+                    if (
+                        intval($month) < 1
                         || intval($month) > 12
                         || intval($day) < 0
                         || intval($day) > 31
-                        || intval(hour) > 23
-                        || (minute !== null && intval(minute) > 59)
-                        || (second !== null && intval(second) > 59)
+                        || intval($hour) > 23
+                        || ($minute !== null && intval($minute) > 59)
+                        || ($second !== null && intval($second) > 59)
                     ) {
                         $validDateTime = false;
                     }
@@ -604,7 +607,7 @@ class BCGgs1128 extends BCGcode128
                 $pos = $nbCharContent - 1;
             }
 
-            $id = str_replace('y', $nbCharContent - ($pos + 1), strtolower($id));
+            $id = str_replace('y', (string)($nbCharContent - ($pos + 1)), strtolower($id));
             $content = str_replace('.', '', $content);
             $decimalPointRemoved++;
         }

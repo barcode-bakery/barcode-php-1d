@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -20,6 +21,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode;
@@ -29,7 +31,7 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGupce extends BCGBarcode1D
 {
-    protected array $codeParity = array();
+    protected array $codeParity = [];
     protected ?string $upce;
     protected ?BCGLabel $labelLeft = null;
     protected ?BCGLabel $labelCenter = null;
@@ -42,11 +44,11 @@ class BCGupce extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
         // Odd Parity starting with a space
         // Even Parity is the inverse (0=0012) starting with a space
-        $this->code = array(
+        $this->code = [
             '2100',     /* 0 */
             '1110',     /* 1 */
             '1011',     /* 2 */
@@ -57,44 +59,45 @@ class BCGupce extends BCGBarcode1D
             '0201',     /* 7 */
             '0102',     /* 8 */
             '2001'      /* 9 */
-        );
+        ];
 
         // Parity, 0=Odd, 1=Even for manufacturer code. Depending on 1st System Digit and Checksum
-        $this->codeParity = array(
-            array(
-                array(1, 1, 1, 0, 0, 0),    /* 0,0 */
-                array(1, 1, 0, 1, 0, 0),    /* 0,1 */
-                array(1, 1, 0, 0, 1, 0),    /* 0,2 */
-                array(1, 1, 0, 0, 0, 1),    /* 0,3 */
-                array(1, 0, 1, 1, 0, 0),    /* 0,4 */
-                array(1, 0, 0, 1, 1, 0),    /* 0,5 */
-                array(1, 0, 0, 0, 1, 1),    /* 0,6 */
-                array(1, 0, 1, 0, 1, 0),    /* 0,7 */
-                array(1, 0, 1, 0, 0, 1),    /* 0,8 */
-                array(1, 0, 0, 1, 0, 1)     /* 0,9 */
-            ),
-            array(
-                array(0, 0, 0, 1, 1, 1),    /* 0,0 */
-                array(0, 0, 1, 0, 1, 1),    /* 0,1 */
-                array(0, 0, 1, 1, 0, 1),    /* 0,2 */
-                array(0, 0, 1, 1, 1, 0),    /* 0,3 */
-                array(0, 1, 0, 0, 1, 1),    /* 0,4 */
-                array(0, 1, 1, 0, 0, 1),    /* 0,5 */
-                array(0, 1, 1, 1, 0, 0),    /* 0,6 */
-                array(0, 1, 0, 1, 0, 1),    /* 0,7 */
-                array(0, 1, 0, 1, 1, 0),    /* 0,8 */
-                array(0, 1, 1, 0, 1, 0)     /* 0,9 */
-            )
-        );
+        $this->codeParity = [
+            [
+                [1, 1, 1, 0, 0, 0],    /* 0,0 */
+                [1, 1, 0, 1, 0, 0],    /* 0,1 */
+                [1, 1, 0, 0, 1, 0],    /* 0,2 */
+                [1, 1, 0, 0, 0, 1],    /* 0,3 */
+                [1, 0, 1, 1, 0, 0],    /* 0,4 */
+                [1, 0, 0, 1, 1, 0],    /* 0,5 */
+                [1, 0, 0, 0, 1, 1],    /* 0,6 */
+                [1, 0, 1, 0, 1, 0],    /* 0,7 */
+                [1, 0, 1, 0, 0, 1],    /* 0,8 */
+                [1, 0, 0, 1, 0, 1]     /* 0,9 */
+            ],
+            [
+                [0, 0, 0, 1, 1, 1],    /* 0,0 */
+                [0, 0, 1, 0, 1, 1],    /* 0,1 */
+                [0, 0, 1, 1, 0, 1],    /* 0,2 */
+                [0, 0, 1, 1, 1, 0],    /* 0,3 */
+                [0, 1, 0, 0, 1, 1],    /* 0,4 */
+                [0, 1, 1, 0, 0, 1],    /* 0,5 */
+                [0, 1, 1, 1, 0, 0],    /* 0,6 */
+                [0, 1, 0, 1, 0, 1],    /* 0,7 */
+                [0, 1, 0, 1, 1, 0],    /* 0,8 */
+                [0, 1, 1, 0, 1, 0]     /* 0,9 */
+            ]
+        ];
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         $this->calculateChecksum();
 
@@ -124,8 +127,9 @@ class BCGupce extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 3;
@@ -143,6 +147,7 @@ class BCGupce extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         if ($this->isDefaultEanLabelEnabled()) {
@@ -186,6 +191,7 @@ class BCGupce extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -195,7 +201,7 @@ class BCGupce extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('upce', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -265,6 +271,7 @@ class BCGupce extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Calculating Checksum
@@ -274,7 +281,7 @@ class BCGupce extends BCGBarcode1D
         // Multiply it by the number
         // Add all of that and do 10-(?mod10)
         $odd = true;
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = strlen($this->text);
         for ($i = $c; $i > 0; $i--) {
             if ($odd === true) {
@@ -300,6 +307,7 @@ class BCGupce extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once
@@ -316,11 +324,11 @@ class BCGupce extends BCGBarcode1D
     /**
      * Draws the extended bars on the image.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @param int $plus How much more we should display the bars.
      * @return void
      */
-    protected function drawExtendedBars($image, int $plus): void
+    protected function drawExtendedBars(\GdImage $image, int $plus): void
     {
         $rememberX = $this->positionX;
         $rememberH = $this->thickness;

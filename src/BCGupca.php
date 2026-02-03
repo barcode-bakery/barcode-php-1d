@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -18,10 +19,10 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode;
-use BarcodeBakery\Common\BCGBarcode1D;
 use BarcodeBakery\Common\BCGLabel;
 use BarcodeBakery\Common\BCGParseException;
 
@@ -40,10 +41,11 @@ class BCGupca extends BCGean13
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // The following code is exactly the same as EAN13. We just add a 0 in front of the code !
         $this->text = '0' . $this->text; // We will remove it at the end... don't worry
@@ -57,11 +59,12 @@ class BCGupca extends BCGean13
     /**
      * Draws the extended bars on the image.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @param int $plus How much more we should display the bars.
      * @return void
      */
-    protected function drawExtendedBars($image, int $plus): void
+    #[\Override]
+    protected function drawExtendedBars(\GdImage $image, int $plus): void
     {
         $tempText = $this->text . $this->keys[$this->checksumValue[0]];
         $rememberX = $this->positionX;
@@ -105,6 +108,7 @@ class BCGupca extends BCGean13
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         if ($this->isDefaultEanLabelEnabled()) {
@@ -148,6 +152,7 @@ class BCGupca extends BCGean13
      *
      * @return void
      */
+    #[\Override]
     protected function checkCorrectLength(): void
     {
         // If we have 12 chars, just flush the last one without throwing anything

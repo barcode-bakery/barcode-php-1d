@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,6 +11,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -17,10 +19,10 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGcode39extended extends BCGcode39
 {
-    const EXTENDED_1 = 39;
-    const EXTENDED_2 = 40;
-    const EXTENDED_3 = 41;
-    const EXTENDED_4 = 42;
+    private const EXTENDED_1 = 39;
+    private const EXTENDED_2 = 40;
+    private const EXTENDED_3 = 41;
+    private const EXTENDED_4 = 42;
 
     protected ?array $indcheck;
     protected ?array $data;
@@ -45,16 +47,17 @@ class BCGcode39extended extends BCGcode39
      * @param string $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         BCGBarcode1D::parse($text);
 
-        $data = array();
-        $indcheck = array();
+        $data = [];
+        $indcheck = [];
 
         $c = strlen($this->text);
         for ($i = 0; $i < $c; $i++) {
-            $pos = array_search($this->text[$i], $this->keys);
+            $pos = array_search($this->text[$i], $this->keys, true);
             if ($pos === false) {
                 // Search in extended?
                 $extended = self::getExtendedVersion($this->text[$i]);
@@ -77,7 +80,7 @@ class BCGcode39extended extends BCGcode39
                             $indcheck[] = self::EXTENDED_4;
                             $data[] = $this->code[self::EXTENDED_4];
                         } else {
-                            $pos2 = array_search($v, $this->keys);
+                            $pos2 = array_search($v, $this->keys, true);
                             $indcheck[] = $pos2;
                             $data[] = $this->code[$pos2];
                         }
@@ -89,16 +92,17 @@ class BCGcode39extended extends BCGcode39
             }
         }
 
-        $this->setData(array($indcheck, $data));
+        $this->setData([$indcheck, $data]);
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Starting *
         $this->drawChar($image, $this->code[$this->starting], true);
@@ -122,8 +126,9 @@ class BCGcode39extended extends BCGcode39
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $textlength = 13 * count($this->data);
@@ -145,6 +150,7 @@ class BCGcode39extended extends BCGcode39
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         // We do nothing.
@@ -155,9 +161,10 @@ class BCGcode39extended extends BCGcode39
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = count($this->indcheck);
         for ($i = 0; $i < $c; $i++) {
             $this->checksumValue[0] += $this->indcheck[$i];

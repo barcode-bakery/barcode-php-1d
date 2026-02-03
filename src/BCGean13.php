@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -18,6 +19,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode;
@@ -27,7 +29,7 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGean13 extends BCGBarcode1D
 {
-    protected array $codeParity = array();
+    protected array $codeParity = [];
     protected ?BCGLabel $labelLeft = null;
     protected ?BCGLabel $labelCenter1 = null;
     protected ?BCGLabel $labelCenter2 = null;
@@ -40,12 +42,12 @@ class BCGean13 extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
         // Left-Hand Odd Parity starting with a space
         // Left-Hand Even Parity is the inverse (0=0012) starting with a space
         // Right-Hand is the same of Left-Hand starting with a bar
-        $this->code = array(
+        $this->code = [
             '2100',     /* 0 */
             '1110',     /* 1 */
             '1011',     /* 2 */
@@ -56,21 +58,21 @@ class BCGean13 extends BCGBarcode1D
             '0201',     /* 7 */
             '0102',     /* 8 */
             '2001'      /* 9 */
-        );
+        ];
 
         // Parity, 0=Odd, 1=Even for manufacturer code. Depending on 1st System Digit
-        $this->codeParity = array(
-            array(0, 0, 0, 0, 0),   /* 0 */
-            array(0, 1, 0, 1, 1),   /* 1 */
-            array(0, 1, 1, 0, 1),   /* 2 */
-            array(0, 1, 1, 1, 0),   /* 3 */
-            array(1, 0, 0, 1, 1),   /* 4 */
-            array(1, 1, 0, 0, 1),   /* 5 */
-            array(1, 1, 1, 0, 0),   /* 6 */
-            array(1, 0, 1, 0, 1),   /* 7 */
-            array(1, 0, 1, 1, 0),   /* 8 */
-            array(1, 1, 0, 1, 0)    /* 9 */
-        );
+        $this->codeParity = [
+            [0, 0, 0, 0, 0],   /* 0 */
+            [0, 1, 0, 1, 1],   /* 1 */
+            [0, 1, 1, 0, 1],   /* 2 */
+            [0, 1, 1, 1, 0],   /* 3 */
+            [1, 0, 0, 1, 1],   /* 4 */
+            [1, 1, 0, 0, 1],   /* 5 */
+            [1, 1, 1, 0, 0],   /* 6 */
+            [1, 0, 1, 0, 1],   /* 7 */
+            [1, 0, 1, 1, 0],   /* 8 */
+            [1, 1, 0, 1, 0]    /* 9 */
+        ];
 
         $this->alignDefaultLabel(true);
     }
@@ -81,18 +83,19 @@ class BCGean13 extends BCGBarcode1D
      * @param bool $align Aligns the label.
      * @return void
      */
-    public function alignDefaultLabel($align): void
+    public function alignDefaultLabel(bool $align): void
     {
-        $this->alignLabel = (bool)$align;
+        $this->alignLabel = $align;
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         $this->drawBars($image);
         $this->drawText($image, 0, 0, $this->positionX, $this->thickness);
@@ -108,8 +111,9 @@ class BCGean13 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 3;
@@ -127,6 +131,7 @@ class BCGean13 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         if ($this->isDefaultEanLabelEnabled()) {
@@ -175,6 +180,7 @@ class BCGean13 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -198,7 +204,7 @@ class BCGean13 extends BCGBarcode1D
         // Checking if all chars are allowed
         $c = strlen($this->text);
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('ean13', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -225,6 +231,7 @@ class BCGean13 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Calculating Checksum
@@ -234,7 +241,7 @@ class BCGean13 extends BCGBarcode1D
         // Multiply it by the number
         // Add all of that and do 10-(?mod10)
         $odd = true;
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = strlen($this->text);
         for ($i = $c; $i > 0; $i--) {
             if ($odd === true) {
@@ -260,6 +267,7 @@ class BCGean13 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once
@@ -276,10 +284,10 @@ class BCGean13 extends BCGBarcode1D
     /**
      * Draws the bars.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    protected function drawBars($image): void
+    protected function drawBars(\GdImage $image): void
     {
         // Checksum
         $this->calculateChecksum();
@@ -311,11 +319,11 @@ class BCGean13 extends BCGBarcode1D
     /**
      * Draws the extended bars on the image.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @param int $plus How much more we should display the bars.
      * @return void
      */
-    protected function drawExtendedBars($image, int $plus): void
+    protected function drawExtendedBars(\GdImage $image, int $plus): void
     {
         $rememberX = $this->positionX;
         $rememberH = $this->thickness;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode;
@@ -27,8 +29,8 @@ class BCGpostnet extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $this->code = [
             '11000',    /* 0 */
             '00011',    /* 1 */
             '00101',    /* 2 */
@@ -39,7 +41,7 @@ class BCGpostnet extends BCGBarcode1D
             '10001',    /* 7 */
             '10010',    /* 8 */
             '10100'     /* 9 */
-        );
+        ];
 
         $this->setThickness(9);
     }
@@ -47,10 +49,11 @@ class BCGpostnet extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Checksum
         $checksum = 0;
@@ -82,8 +85,9 @@ class BCGpostnet extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $c = strlen($this->text);
@@ -105,6 +109,7 @@ class BCGpostnet extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -114,7 +119,7 @@ class BCGpostnet extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('postnet', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -130,12 +135,13 @@ class BCGpostnet extends BCGBarcode1D
     /**
      * Overloaded method for drawing special barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @param string $code The code.
      * @param bool $startBar True if we begin with a space.
      * @return void
      */
-    protected function drawChar($image, string $code, bool $startBar = true): void
+    #[\Override]
+    protected function drawChar(\GdImage $image, string $code, bool $startBar = true): void
     {
         $c = strlen($code);
         for ($i = 0; $i < $c; $i++) {

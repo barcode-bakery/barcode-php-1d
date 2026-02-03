@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -28,8 +30,8 @@ class BCGs25 extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $this->code = [
             '0000202000',   /* 0 */
             '2000000020',   /* 1 */
             '0020000020',   /* 2 */
@@ -40,7 +42,7 @@ class BCGs25 extends BCGBarcode1D
             '0000002020',   /* 7 */
             '2000002000',   /* 8 */
             '0020002000'    /* 9 */
-        );
+        ];
 
         $this->setChecksum(false);
     }
@@ -53,16 +55,17 @@ class BCGs25 extends BCGBarcode1D
      */
     public function setChecksum(bool $checksum): void
     {
-        $this->checksum = (bool)$checksum;
+        $this->checksum = $checksum;
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         $tempText = $this->text;
 
@@ -91,8 +94,9 @@ class BCGs25 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $c = strlen($this->text);
@@ -115,6 +119,7 @@ class BCGs25 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -124,7 +129,7 @@ class BCGs25 extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('s25', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -144,6 +149,7 @@ class BCGs25 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Calculating Checksum
@@ -153,7 +159,7 @@ class BCGs25 extends BCGBarcode1D
         // Multiply it by the number
         // Add all of that and do 10-(?mod10)
         $even = true;
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = strlen($this->text);
         for ($i = $c; $i > 0; $i--) {
             if ($even === true) {
@@ -174,6 +180,7 @@ class BCGs25 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once

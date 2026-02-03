@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -28,16 +30,16 @@ class BCGothercode extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    public function draw(\GdImage $image): void
     {
         $this->drawChar($image, $this->text, true);
         $this->drawText($image, 0, 0, $this->positionX, $this->thickness);
@@ -49,6 +51,7 @@ class BCGothercode extends BCGBarcode1D
      *
      * @return string The label string.
      */
+    #[\Override]
     public function getLabel(): string
     {
         $label = $this->label;
@@ -64,8 +67,9 @@ class BCGothercode extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $array = str_split($this->text, 1);
@@ -81,6 +85,7 @@ class BCGothercode extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -90,7 +95,7 @@ class BCGothercode extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('othercode', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }

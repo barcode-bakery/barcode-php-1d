@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,6 +11,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -24,8 +26,8 @@ class BCGcode11 extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-');
-        $this->code = array(    // 0 added to add an extra space
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'];
+        $this->code = [    // 0 added to add an extra space
             '000010',   /* 0 */
             '100010',   /* 1 */
             '010010',   /* 2 */
@@ -37,16 +39,17 @@ class BCGcode11 extends BCGBarcode1D
             '100100',   /* 8 */
             '100000',   /* 9 */
             '001000'    /* - */
-        );
+        ];
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Starting Code
         $this->drawChar($image, '001100', true);
@@ -74,8 +77,9 @@ class BCGcode11 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 8;
@@ -106,6 +110,7 @@ class BCGcode11 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -115,7 +120,7 @@ class BCGcode11 extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('code11', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -128,6 +133,7 @@ class BCGcode11 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Checksum
@@ -140,9 +146,9 @@ class BCGcode11 extends BCGBarcode1D
         // Second CheckSUM "K"
         // Same as CheckSUM "C" but we count the CheckSum "C" at the end
         // After 9, the sequence wraps around back to 1.
-        $sequenceMultiplier = array(10, 9);
+        $sequenceMultiplier = [10, 9];
         $tempText = $this->text;
-        $this->checksumValue = array();
+        $this->checksumValue = [];
         for ($z = 0; $z < 2; $z++) {
             $c = strlen($tempText);
 
@@ -171,6 +177,7 @@ class BCGcode11 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === false) { // Calculate the checksum only once
@@ -190,7 +197,7 @@ class BCGcode11 extends BCGBarcode1D
         return null;
     }
 
-    private function getIndexLength(int $index): int
+    private function getIndexLength(int|false $index): int
     {
         $length = 0;
         if ($index !== false) {

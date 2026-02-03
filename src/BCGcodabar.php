@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,6 +11,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -24,8 +26,8 @@ class BCGcodabar extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '$', ':', '/', '.', '+', 'A', 'B', 'C', 'D');
-        $this->code = array(    // 0 added to add an extra space
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '$', ':', '/', '.', '+', 'A', 'B', 'C', 'D'];
+        $this->code = [    // 0 added to add an extra space
             '00000110',     /* 0 */
             '00001100',     /* 1 */
             '00010010',     /* 2 */
@@ -46,7 +48,7 @@ class BCGcodabar extends BCGBarcode1D
             '01010010',     /* B */
             '00010110',     /* C */
             '00011100'      /* D */
-        );
+        ];
     }
 
     /**
@@ -55,7 +57,8 @@ class BCGcodabar extends BCGBarcode1D
      * @param mixed $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         parent::parse(strtoupper($text));    // Only Capital Letters are Allowed
     }
@@ -63,10 +66,11 @@ class BCGcodabar extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         $c = strlen($this->text);
         for ($i = 0; $i < $c; $i++) {
@@ -81,8 +85,9 @@ class BCGcodabar extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $textLength = 0;
@@ -105,6 +110,7 @@ class BCGcodabar extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -114,19 +120,19 @@ class BCGcodabar extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('codabar', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
 
         // Must start by A, B, C or D
-        if ($c === 0 || ($this->text[0] !== 'A' && $this->text[0] !== 'B' && $this->text[0] !== 'C' && $this->text[0] !== 'D')) {
+        if ($c === 0 || !in_array($this->text[0], ['A', 'B', 'C', 'D'], true)) {
             throw new BCGParseException('codabar', 'The text must start by the character A, B, C, or D.');
         }
 
         // Must end by A, B, C or D
         $c2 = $c - 1;
-        if ($c2 === 0 || ($this->text[$c2] !== 'A' && $this->text[$c2] !== 'B' && $this->text[$c2] !== 'C' && $this->text[$c2] !== 'D')) {
+        if ($c2 === 0 || !in_array($this->text[$c2], ['A', 'B', 'C', 'D'], true)) {
             throw new BCGParseException('codabar', 'The text must end by the character A, B, C, or D.');
         }
 

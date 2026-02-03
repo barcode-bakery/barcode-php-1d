@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,6 +11,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -29,8 +31,8 @@ class BCGcode39 extends BCGBarcode1D
         parent::__construct();
 
         $this->starting = $this->ending = 43;
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', '*');
-        $this->code = array(    // 0 added to add an extra space
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', '*'];
+        $this->code = [    // 0 added to add an extra space
             '0001101000',   /* 0 */
             '1001000010',   /* 1 */
             '0011000010',   /* 2 */
@@ -75,7 +77,7 @@ class BCGcode39 extends BCGBarcode1D
             '0100010100',   /* + */
             '0001010100',   /* % */
             '0100101000'    /* * */
-        );
+        ];
 
         $this->setChecksum(false);
     }
@@ -88,7 +90,7 @@ class BCGcode39 extends BCGBarcode1D
      */
     public function setChecksum(bool $checksum): void
     {
-        $this->checksum = (bool)$checksum;
+        $this->checksum = $checksum;
     }
 
     /**
@@ -97,7 +99,8 @@ class BCGcode39 extends BCGBarcode1D
      * @param string $text The text.
      * @return void
      */
-    public function parse($text): void
+    #[\Override]
+    public function parse(mixed $text): void
     {
         parent::parse(strtoupper($text));    // Only Capital Letters are Allowed
     }
@@ -105,10 +108,11 @@ class BCGcode39 extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Starting *
         $this->drawChar($image, $this->code[$this->starting], true);
@@ -135,8 +139,9 @@ class BCGcode39 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $textlength = 13 * strlen($this->text);
@@ -158,6 +163,7 @@ class BCGcode39 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -167,12 +173,12 @@ class BCGcode39 extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('code39', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
 
-        if (strpos($this->text, '*') !== false) {
+        if (str_contains($this->text, '*')) {
             throw new BCGParseException('code39', 'The character \'*\' is not allowed.');
         }
 
@@ -184,9 +190,10 @@ class BCGcode39 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = strlen($this->text);
         for ($i = 0; $i < $c; $i++) {
             $this->checksumValue[0] += $this->findIndex($this->text[$i]);
@@ -200,6 +207,7 @@ class BCGcode39 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once

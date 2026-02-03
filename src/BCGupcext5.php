@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -20,6 +21,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -28,7 +30,7 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGupcext5 extends BCGBarcode1D
 {
-    protected array $codeParity = array();
+    protected array $codeParity = [];
 
     /**
      * Creates a UPC supplemental 5 digits barcode.
@@ -37,8 +39,8 @@ class BCGupcext5 extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $this->code = [
             '2100',     /* 0 */
             '1110',     /* 1 */
             '1011',     /* 2 */
@@ -49,30 +51,31 @@ class BCGupcext5 extends BCGBarcode1D
             '0201',     /* 7 */
             '0102',     /* 8 */
             '2001'      /* 9 */
-        );
+        ];
 
         // Parity, 0=Odd, 1=Even. Depending Checksum
-        $this->codeParity = array(
-            array(1, 1, 0, 0, 0),   /* 0 */
-            array(1, 0, 1, 0, 0),   /* 1 */
-            array(1, 0, 0, 1, 0),   /* 2 */
-            array(1, 0, 0, 0, 1),   /* 3 */
-            array(0, 1, 1, 0, 0),   /* 4 */
-            array(0, 0, 1, 1, 0),   /* 5 */
-            array(0, 0, 0, 1, 1),   /* 6 */
-            array(0, 1, 0, 1, 0),   /* 7 */
-            array(0, 1, 0, 0, 1),   /* 8 */
-            array(0, 0, 1, 0, 1)    /* 9 */
-        );
+        $this->codeParity = [
+            [1, 1, 0, 0, 0],   /* 0 */
+            [1, 0, 1, 0, 0],   /* 1 */
+            [1, 0, 0, 1, 0],   /* 2 */
+            [1, 0, 0, 0, 1],   /* 3 */
+            [0, 1, 1, 0, 0],   /* 4 */
+            [0, 0, 1, 1, 0],   /* 5 */
+            [0, 0, 0, 1, 1],   /* 6 */
+            [0, 1, 0, 1, 0],   /* 7 */
+            [0, 1, 0, 0, 1],   /* 8 */
+            [0, 0, 1, 0, 1]    /* 9 */
+        ];
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Checksum
         $this->calculateChecksum();
@@ -96,8 +99,9 @@ class BCGupcext5 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 4;
@@ -114,6 +118,7 @@ class BCGupcext5 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         parent::addDefaultLabel();
@@ -128,6 +133,7 @@ class BCGupcext5 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -137,7 +143,7 @@ class BCGupcext5 extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('upcext5', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -155,6 +161,7 @@ class BCGupcext5 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Calculating Checksum
@@ -164,7 +171,7 @@ class BCGupcext5 extends BCGBarcode1D
         // Multiply it by the number
         // Add all of that and do ?mod10
         $odd = true;
-        $this->checksumValue = array(0);
+        $this->checksumValue = [0];
         $c = strlen($this->text);
         for ($i = $c; $i > 0; $i--) {
             if ($odd === true) {
@@ -190,6 +197,7 @@ class BCGupcext5 extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once

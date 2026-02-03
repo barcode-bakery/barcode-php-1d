@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGBarcode1D;
@@ -22,7 +24,7 @@ use BarcodeBakery\Common\BCGParseException;
 
 class BCGupcext2 extends BCGBarcode1D
 {
-    protected array $codeParity = array();
+    protected array $codeParity = [];
 
     /**
      * Creates a UPC supplemental 2 digits barcode.
@@ -31,8 +33,8 @@ class BCGupcext2 extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $this->code = [
             '2100',     /* 0 */
             '1110',     /* 1 */
             '1011',     /* 2 */
@@ -43,23 +45,24 @@ class BCGupcext2 extends BCGBarcode1D
             '0201',     /* 7 */
             '0102',     /* 8 */
             '2001'      /* 9 */
-        );
+        ];
 
         // Parity, 0=Odd, 1=Even. Depending on ?%4
-        $this->codeParity = array(
-            array(0, 0),    /* 0 */
-            array(0, 1),    /* 1 */
-            array(1, 0),    /* 2 */
-            array(1, 1)     /* 3 */
-        );
+        $this->codeParity = [
+            [0, 0],    /* 0 */
+            [0, 1],    /* 1 */
+            [1, 0],    /* 2 */
+            [1, 1]     /* 3 */
+        ];
     }
 
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Starting Code
         $this->drawChar($image, '001', true);
@@ -80,8 +83,9 @@ class BCGupcext2 extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $startlength = 4;
@@ -98,6 +102,7 @@ class BCGupcext2 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function addDefaultLabel(): void
     {
         parent::addDefaultLabel();
@@ -112,6 +117,7 @@ class BCGupcext2 extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -121,7 +127,7 @@ class BCGupcext2 extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('upcext2', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }

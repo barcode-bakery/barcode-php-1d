@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -10,6 +11,7 @@ declare(strict_types=1);
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodebakery.com
  */
+
 namespace BarcodeBakery\Barcode;
 
 use BarcodeBakery\Common\BCGArgumentException;
@@ -27,8 +29,8 @@ class BCGmsi extends BCGBarcode1D
     {
         parent::__construct();
 
-        $this->keys = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-        $this->code = array(
+        $this->keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $this->code = [
             '01010101',     /* 0 */
             '01010110',     /* 1 */
             '01011001',     /* 2 */
@@ -39,7 +41,7 @@ class BCGmsi extends BCGBarcode1D
             '01101010',     /* 7 */
             '10010101',     /* 8 */
             '10010110'      /* 9 */
-        );
+        ];
 
         $this->setChecksum(0);
     }
@@ -52,7 +54,6 @@ class BCGmsi extends BCGBarcode1D
      */
     public function setChecksum(int $checksum): void
     {
-        $checksum = intval($checksum);
         if ($checksum < 0 && $checksum > 2) {
             throw new BCGArgumentException('The checksum must be between 0 and 2 included.', 'checksum');
         }
@@ -63,10 +64,11 @@ class BCGmsi extends BCGBarcode1D
     /**
      * Draws the barcode.
      *
-     * @param resource $image The surface.
+     * @param \GdImage $image The surface.
      * @return void
      */
-    public function draw($image): void
+    #[\Override]
+    public function draw(\GdImage $image): void
     {
         // Checksum
         $this->calculateChecksum();
@@ -95,8 +97,9 @@ class BCGmsi extends BCGBarcode1D
      *
      * @param int $width The width.
      * @param int $height The height.
-     * @return int[] An array, [0] being the width, [1] being the height.
+     * @return array{int, int} An array, [0] being the width, [1] being the height.
      */
+    #[\Override]
     public function getDimension(int $width, int $height): array
     {
         $textlength = 12 * strlen($this->text);
@@ -114,6 +117,7 @@ class BCGmsi extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function validate(): void
     {
         $c = strlen($this->text);
@@ -123,7 +127,7 @@ class BCGmsi extends BCGBarcode1D
 
         // Checking if all chars are allowed
         for ($i = 0; $i < $c; $i++) {
-            if (array_search($this->text[$i], $this->keys) === false) {
+            if (!in_array($this->text[$i], $this->keys, true)) {
                 throw new BCGParseException('msi', 'The character \'' . $this->text[$i] . '\' is not allowed.');
             }
         }
@@ -134,6 +138,7 @@ class BCGmsi extends BCGBarcode1D
      *
      * @return void
      */
+    #[\Override]
     protected function calculateChecksum(): void
     {
         // Forming a new number
@@ -146,7 +151,7 @@ class BCGmsi extends BCGBarcode1D
         // Add up other digit not used.
         // 10 - (? Modulo 10). If result = 10, change to 0
         $lastText = $this->text;
-        $this->checksumValue = array();
+        $this->checksumValue = [];
         for ($i = 0; $i < $this->checksum; $i++) {
             $newText = '';
             $newNumber = 0;
@@ -182,6 +187,7 @@ class BCGmsi extends BCGBarcode1D
      *
      * @return string|null The checksum value.
      */
+    #[\Override]
     protected function processChecksum(): ?string
     {
         if ($this->checksumValue === null) { // Calculate the checksum only once
